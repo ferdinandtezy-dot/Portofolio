@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portofolio Ferdinand</title>
+  <!-- Menggunakan font Inter sesuai dengan panduan desain Raycast -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* Palet warna disesuaikan dengan Raycast Design System */
+    :root {
+      --bg: #1A1A2E;          /* color-navy-950 */
+      --surface: #2A2A3E;     /* color-navy-800 */
+      --card: #2A2A3E;        /* Disamakan dengan surface untuk input/cards */
+      --accent: #FF6363;      /* color-brand (Brand red) */
+      --accent2: #FF8C00;     /* color-error (Orange, dipakai sebagai variasi aksen hangat) */
+      --pink: #F59E0B;        /* color-warning (Yellow-orange) */
+      --text: #FFFFFF;        /* color-text */
+      --muted: #888899;       /* color-gray-400 */
+      --border: #33334A;      /* color-navy-700 */
+    }
+
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    /* Scrollbar menggunakan brand red */
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+
+    /* ─── NOISE OVERLAY ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.4;
+    }
+
+    /* ─── CURSOR GLOW ─── */
+    /* Diubah ke warna aksen brand red Raycast */
+    .cursor-glow {
+      position: fixed;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(255,99,99,0.12) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition: left 0.3s ease, top 0.3s ease;
+      z-index: 1;
+    }
+
+    /* ─── SIDEBAR NAV ─── */
+    .sidebar {
+      position: fixed;
+      left: 0; top: 0;
+      width: 80px;
+      height: 100vh;
+      background: rgba(26,26,46,0.9);
+      backdrop-filter: blur(20px);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 30px 0;
+      z-index: 100;
+    }
+
+    .sidebar-logo {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      background: linear-gradient(180deg, var(--accent2), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 3px;
+    }
+
+    .sidebar-links {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      list-style: none;
+    }
+
+    .sidebar-links a {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: color 0.3s;
+      position: relative;
+    }
+
+    .sidebar-links a::before {
+      content: '';
+      width: 3px;
+      height: 3px;
+      background: var(--accent);
+      border-radius: 50%;
+      transition: all 0.3s;
+    }
+
+    .sidebar-links a:hover { color: var(--text); }
+    .sidebar-links a:hover::before { width: 3px; height: 20px; border-radius: 2px; }
+
+    .sidebar-social {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .sidebar-social a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.65rem;
+      font-weight: 700;
+      writing-mode: vertical-rl;
+      transition: color 0.3s;
+      letter-spacing: 2px;
+    }
+    .sidebar-social a:hover { color: var(--accent); }
+
+    /* ─── MAIN WRAPPER ─── */
+    .main-wrapper {
+      margin-left: 80px;
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 60px 8% 60px 6%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Grid lines background disesuaikan dengan merah hangat Raycast */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,99,99,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,99,99,0.05) 1px, transparent 1px);
+      background-size: 60px 60px;
+      animation: gridMove 20s linear infinite;
+    }
+
+    @keyframes gridMove {
+      0% { background-position: 0 0; }
+      100% { background-position: 60px 60px; }
+    }
+
+    .hero-left {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,99,99,0.15);
+      border: 1px solid rgba(255,99,99,0.3);
+      color: var(--accent);
+      padding: 6px 16px;
+      border-radius: 6px; /* radius-sm */
+      font-size: 12px; /* Detail size */
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 30px;
+      animation: fadeSlideDown 0.8s ease forwards;
+    }
+
+    .hero-tag span { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: blink 1.5s infinite; }
+
+    .hero-name {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      font-weight: 700;
+      line-height: 1.05;
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeSlideUp 0.8s ease 0.3s forwards;
+    }
+
+    .hero-name .outline {
+      -webkit-text-stroke: 2px rgba(255,255,255,0.4);
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-name .highlight {
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-role {
+      font-size: 18px; /* Heading size */
+      color: var(--muted);
+      margin-bottom: 40px;
+      opacity: 0;
+      animation: fadeSlideUp 0.8s ease 0.5s forwards;
+    }
+
+    .hero-role strong { color: var(--accent); }
+
+    .hero-cta {
+      display: flex;
+      gap: 16px; /* space-4 */
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeSlideUp 0.8s ease 0.7s forwards;
+    }
+
+    .btn-main {
+      padding: 16px 30px;
+      background: var(--accent); /* Solid brand red */
+      color: #fff;
+      border: none;
+      border-radius: 10px; /* radius-md */
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 14px; /* Body size */
+      cursor: pointer;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .btn-main::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .btn-main:hover { transform: translateY(-3px); box-shadow: 0 4px 16px rgba(0,0,0,0.3); } /* shadow-card */
+    .btn-main:hover::after { opacity: 1; }
+
+    .btn-ghost {
+      padding: 16px 30px;
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 10px; /* radius-md */
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 14px; /* Body size */
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Hero Right - Visual */
+    .hero-right {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero-photo-frame {
+      position: relative;
+      width: 340px;
+      height: 420px;
+    }
+
+    .hero-photo-frame::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      background: linear-gradient(135deg, var(--accent2), var(--accent), var(--pink));
+      border-radius: 14px; /* radius-lg */
+      animation: rotateBorder 4s linear infinite;
+      z-index: -1;
+    }
+
+    @keyframes rotateBorder {
+      0% { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(360deg); }
+    }
+
+    .hero-photo-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 14px; /* radius-lg */
+      display: block;
+    }
+
+    .hero-float-card {
+      position: absolute;
+      background: rgba(42,42,62,0.9); /* color-surface / navy-800 */
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-radius: 10px; /* radius-md */
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: float 4s ease-in-out infinite;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3); /* shadow-card */
+    }
+
+    .hero-float-card.card1 { bottom: -20px; left: -50px; animation-delay: 0s; }
+    .hero-float-card.card2 { top: -20px; right: -50px; animation-delay: 1s; }
+
+    .float-icon { font-size: 1.5rem; }
+    .float-label { font-size: 12px; color: var(--muted); }
+    .float-value { font-size: 14px; font-weight: 700; color: #fff; }
+
+    .hero-stats {
+      position: absolute;
+      bottom: 60px;
+      left: 6%;
+      display: flex;
+      gap: 40px;
+      z-index: 2;
+      opacity: 0;
+      animation: fadeSlideUp 0.8s ease 1s forwards;
+    }
+
+    .stat-item { text-align: center; }
+    .stat-num {
+      font-family: 'Inter', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .stat-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+
+    /* ─── ABOUT ─── */
+    .about-section {
+      padding: 120px 8% 120px 6%;
+      background: var(--surface);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .about-section::after {
+      content: 'ABOUT';
+      position: absolute;
+      right: -20px; top: 50%;
+      transform: translateY(-50%) rotate(90deg);
+      font-size: 10rem;
+      font-weight: 900;
+      color: rgba(255,255,255,0.02);
+      pointer-events: none;
+      letter-spacing: 10px;
+    }
+
+    .section-label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 30px;
+    }
+
+    .section-title .outline {
+      -webkit-text-stroke: 2px rgba(255,255,255,0.3);
+      -webkit-text-fill-color: transparent;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .about-text p {
+      color: var(--muted);
+      line-height: 1.9;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .skill-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px; /* radius-lg */
+      padding: 20px;
+      transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .skill-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+
+    .skill-card:hover { transform: translateY(-8px); border-color: rgba(255,99,99,0.3); box-shadow: 0 4px 16px rgba(0,0,0,0.3); } /* shadow-card */
+    .skill-card:hover::before { transform: scaleX(1); }
+
+    .skill-icon { font-size: 2rem; margin-bottom: 10px; }
+    .skill-name { font-weight: 600; font-size: 14px; }
+    .skill-level { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+    .skill-bar {
+      margin-top: 10px;
+      height: 4px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .skill-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 2px;
+      width: 0;
+      transition: width 1.5s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    /* ─── PROJECTS ─── */
+    .project-section {
+      padding: 120px 8% 60px 6%;
+      background: var(--bg);
+      position: relative;
+    }
+
+    .project-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 60px;
+    }
+
+    .project-header a {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: gap 0.3s;
+    }
+    .project-header a:hover { gap: 12px; }
+
+    /* PROJECT BENTO GRID */
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-template-rows: auto;
+      gap: 20px;
+    }
+
+    .bento-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px; /* radius-lg */
+      overflow: hidden;
+      position: relative;
+      transition: all 0.5s cubic-bezier(0.34,1.56,0.64,1);
+      cursor: pointer;
+    }
+
+    .bento-card:hover { transform: scale(1.02); border-color: rgba(255,99,99,0.4); box-shadow: 0 4px 16px rgba(0,0,0,0.3); } /* shadow-card */
+
+    .bento-card .img-wrap {
+      overflow: hidden;
+      position: relative;
+    }
+
+    .bento-card .img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.6s ease, filter 0.4s ease;
+      filter: brightness(0.75) saturate(0.9);
+    }
+
+    .bento-card:hover .img-wrap img {
+      transform: scale(1.08);
+      filter: brightness(0.9) saturate(1.2);
+    }
+
+    .bento-card .card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(26,26,46,0.95) 0%, rgba(26,26,46,0.2) 60%, transparent 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 24px;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .bento-card:hover .card-overlay { opacity: 1; }
+
+    .card-tag {
+      display: inline-block;
+      background: rgba(255,99,99,0.3);
+      color: var(--accent);
+      padding: 4px 12px;
+      border-radius: 6px; /* radius-sm */
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      width: fit-content;
+    }
+
+    .card-title-overlay { font-size: 18px; font-weight: 700; color: #fff; }
+    .card-desc-overlay { font-size: 14px; color: var(--muted); margin-top: 4px; }
+
+    /* Bento sizing */
+    .bento-card.b1 { grid-column: span 7; min-height: 360px; }
+    .bento-card.b2 { grid-column: span 5; min-height: 360px; }
+    .bento-card.b3 { grid-column: span 4; min-height: 300px; }
+    .bento-card.b4 { grid-column: span 4; min-height: 300px; }
+    .bento-card.b5 { grid-column: span 4; min-height: 300px; }
+
+    .bento-card .img-wrap { height: 100%; }
+
+    /* ─── VIDEO SECTION ─── */
+    .video-section {
+      padding: 60px 8% 120px 6%;
+      background: var(--bg);
+    }
+
+    .video-header { margin-bottom: 50px; }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 24px;
+    }
+
+    .video-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px; /* radius-lg */
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+      position: relative;
+    }
+
+    .video-card:hover {
+      transform: translateY(-10px);
+      border-color: rgba(255,99,99,0.4);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3); /* shadow-card */
+    }
+
+    .video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+    }
+
+    .video-wrapper video,
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border: none;
+    }
+
+    /* Custom play button overlay */
+    .video-play-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(26,26,46,0.4);
+      transition: background 0.3s;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    .video-card:hover .video-play-overlay { background: rgba(26,26,46,0.2); }
+
+    .play-btn {
+      width: 60px;
+      height: 60px;
+      background: rgba(255,99,99,0.9);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255,255,255,0.2);
+    }
+
+    .play-btn::after {
+      content: '';
+      border-style: solid;
+      border-width: 10px 0 10px 18px;
+      border-color: transparent transparent transparent #fff;
+      margin-left: 4px;
+    }
+
+    .video-card:hover .play-btn {
+      transform: scale(1.15);
+      background: var(--accent);
+      box-shadow: 0 0 30px rgba(255,99,99,0.6);
+    }
+
+    .video-info {
+      padding: 20px 22px;
+    }
+
+    .video-info h3 {
+      font-size: 18px; /* Heading size */
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .video-info p { font-size: 14px; color: var(--muted); }
+
+    .video-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: rgba(26,26,46,0.8);
+      backdrop-filter: blur(8px);
+      color: var(--accent);
+      padding: 4px 10px;
+      border-radius: 6px; /* radius-sm */
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      border: 1px solid rgba(255,99,99,0.3);
+      z-index: 3;
+    }
+
+    /* Glowing video feature card */
+    .video-card.featured {
+      grid-column: span 2;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .video-card.featured .video-wrapper {
+      padding-bottom: 0;
+      height: 100%;
+      min-height: 280px;
+    }
+
+    .video-card.featured .video-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    .video-card.featured .video-info h3 { font-size: 24px; margin-bottom: 12px; } /* Title size */
+    .video-card.featured .video-info p { font-size: 14px; margin-bottom: 24px; }
+
+    /* ─── CONTACT ─── */
+    .contact-section {
+      padding: 120px 8% 120px 6%;
+      background: var(--surface);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .contact-section::before {
+      content: '';
+      position: absolute;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(255,99,99,0.08) 0%, transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      pointer-events: none;
+    }
+
+    .contact-inner {
+      max-width: 700px;
+      margin: 0 auto;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .contact-inner p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+      margin-bottom: 50px;
+    }
+
+    .contact-links {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px; /* space-4 */
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .contact-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 16px;
+      border-radius: 10px; /* radius-md */
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+      border: 1px solid var(--border);
+      color: var(--text);
+      background: var(--card);
+    }
+
+    .contact-btn:hover { transform: translateY(-6px) scale(1.03); }
+    .contact-btn.wa:hover { background: #128c7e; border-color: #25d366; box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+    .contact-btn.tiktok:hover { background: #111; border-color: #ff0050; box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+    .contact-btn.ig:hover { background: linear-gradient(135deg, #f09433,#dc2743,#bc1888); border-color: transparent; box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+    .contact-btn.github:hover { background: #24292e; border-color: #6e7681; box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+
+    .contact-btn-icon { font-size: 1.3rem; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      padding: 30px 8% 30px 6%;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .footer-logo {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeSlideDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* ─── SCROLL REVEAL ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .reveal.active { opacity: 1; transform: translateY(0); }
+    .reveal-left { opacity: 0; transform: translateX(-40px); transition: opacity 0.8s ease, transform 0.8s ease; }
+    .reveal-left.active { opacity: 1; transform: translateX(0); }
+    .reveal-right { opacity: 0; transform: translateX(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
+    .reveal-right.active { opacity: 1; transform: translateX(0); }
+
+    /* delay helpers */
+    .delay-1 { transition-delay: 0.1s; }
+    .delay-2 { transition-delay: 0.2s; }
+    .delay-3 { transition-delay: 0.3s; }
+    .delay-4 { transition-delay: 0.4s; }
+    .delay-5 { transition-delay: 0.5s; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 1024px) {
+      .sidebar { width: 60px; }
+      .main-wrapper { margin-left: 60px; }
+      .sidebar-social { display: none; }
+      .bento-card.b1, .bento-card.b2 { grid-column: span 12; min-height: 280px; }
+      .bento-card.b3, .bento-card.b4, .bento-card.b5 { grid-column: span 12; min-height: 240px; }
+      .video-card.featured { grid-column: span 1; display: block; }
+      .video-card.featured .video-wrapper { padding-bottom: 56.25%; height: 0; min-height: 0; }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main-wrapper { margin-left: 0; }
+      .hero { grid-template-columns: 1fr; text-align: center; padding-top: 80px; }
+      .hero-right { margin-top: 40px; }
+      .hero-stats { position: static; margin-top: 40px; justify-content: center; }
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .contact-links { grid-template-columns: 1fr 1fr; }
+      .hero-float-card.card1 { left: -10px; }
+      .hero-float-card.card2 { right: -10px; }
+      .hero-cta { justify-content: center; } /* Memperbaiki tombol tidak simetris */
+      footer { flex-direction: column; gap: 10px; text-align: center; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-photo-frame { width: 260px; height: 320px; }
+      .contact-links { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cursor Glow -->
+  <div class="cursor-glow" id="cursorGlow"></div>
+
+  <!-- ─── SIDEBAR ─── -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">FERD.</div>
+    <ul class="sidebar-links">
+      <li><a href="#home">HOME</a></li>
+      <li><a href="#about">ABOUT</a></li>
+      <li><a href="#project">WORK</a></li>
+      <li><a href="#video">VIDEO</a></li>
+      <li><a href="#contact">CONTACT</a></li>
+    </ul>
+    <div class="sidebar-social">
+      <a href="#" target="_blank">IG</a>
+      <a href="#" target="_blank">TT</a>
+      <a href="#" target="_blank">WA</a>
+    </div>
+  </nav>
+
+  <!-- ─── MAIN WRAPPER ─── -->
+  <div class="main-wrapper">
+
+    <!-- ─── HERO ─── -->
+    <section id="home" class="hero">
+      <div class="hero-left">
+        <div class="hero-tag"><span></span>Available for work</div>
+        <h1 class="hero-name">
+          I'm<br>
+          <span class="highlight">Ferdinand</span><br>
+          <span class="outline">Designer</span>
+        </h1>
+        <p class="hero-role">Photo & Video Editor · <strong>Promtter AI</strong></p>
+        <div class="hero-cta">
+          <a href="#project" class="btn-main">Lihat Karya →</a>
+          <a href="#contact" class="btn-ghost">Hubungi Saya</a>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="hero-photo-frame">
+          <img src="saya.png" alt="Ferdinand">
+          <div class="hero-float-card card1">
+            <div class="float-icon">🎬</div>
+            <div>
+              <div class="float-value">6 Bulan</div>
+              <div class="float-label">Pengalaman</div>
+            </div>
+          </div>
+          <div class="hero-float-card card2">
+            <div class="float-icon">✨</div>
+            <div>
+              <div class="float-value">5 Proyek</div>
+              <div class="float-label">Selesai</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-num">5+</div>
+          <div class="stat-label">Projects</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">4</div>
+          <div class="stat-label">Tools</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">6mo</div>
+          <div class="stat-label">Experience</div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- ─── ABOUT ─── -->
+    <section id="about" class="about-section">
+      <div class="about-grid">
+        <div class="about-text reveal-left">
+          <div class="section-label">— About Me</div>
+          <h2 class="section-title">
+            Halo, Saya<br>
+            <span class="outline">Ferdinand!</span>
+          </h2>
+          <p>Saya bercita-cita menjadi seorang <strong style="color:#fff">professional editor</strong>. Saya gemar mengedit di waktu luang dan sudah 6 bulan menekuni dunia desain.</p>
+          <p>Saya memiliki minat besar dalam menciptakan visual yang menarik dan memanjakan mata — dari poster, game art, hingga video editing.</p>
+          <a href="#project" class="btn-main" style="margin-top:10px; display:inline-block;">Lihat Proyek →</a>
+        </div>
+        <div class="skills-grid reveal-right">
+          <div class="skill-card delay-1">
+            <div class="skill-icon">🎬</div>
+            <div class="skill-name">Alight Motion</div>
+            <div class="skill-level">Video Editing</div>
+            <div class="skill-bar"><div class="skill-bar-fill" data-width="85"></div></div>
+          </div>
+          <div class="skill-card delay-2">
+            <div class="skill-icon">🎨</div>
+            <div class="skill-name">Ibis Paint</div>
+            <div class="skill-level">Digital Art</div>
+            <div class="skill-bar"><div class="skill-bar-fill" data-width="75"></div></div>
+          </div>
+          <div class="skill-card delay-3">
+            <div class="skill-icon">🖼️</div>
+            <div class="skill-name">Canva</div>
+            <div class="skill-level">Graphic Design</div>
+            <div class="skill-bar"><div class="skill-bar-fill" data-width="90"></div></div>
+          </div>
+          <div class="skill-card delay-4">
+            <div class="skill-icon">✂️</div>
+            <div class="skill-name">CapCut</div>
+            <div class="skill-level">Video Editing</div>
+            <div class="skill-bar"><div class="skill-bar-fill" data-width="80"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── PROJECTS ─── -->
+    <section id="project" class="project-section">
+      <div class="project-header reveal">
+        <div>
+          <div class="section-label">— My Work</div>
+          <h2 class="section-title" style="margin:0">Projects</h2>
+        </div>
+        <a href="#contact">Kolaborasi Yuk →</a>
+      </div>
+
+      <div class="bento-grid">
+        <div class="bento-card b1 reveal delay-1">
+          <div class="img-wrap">
+            <img src="messi.jpg" alt="Poster Pemain Sepakbola">
+            <div class="card-overlay">
+              <span class="card-tag">Sports</span>
+              <div class="card-title-overlay">Poster Pemain Sepakbola</div>
+              <div class="card-desc-overlay">Poster Bertema Sepakbola</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bento-card b2 reveal delay-2">
+          <div class="img-wrap">
+            <img src="ml.png" alt="Poster Game">
+            <div class="card-overlay">
+              <span class="card-tag">Gaming</span>
+              <div class="card-title-overlay">Poster Game</div>
+              <div class="card-desc-overlay">Poster Bertema Game</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bento-card b3 reveal delay-1">
+          <div class="img-wrap">
+            <img src="rbt.png" alt="Poster Kartun">
+            <div class="card-overlay">
+              <span class="card-tag">Illustration</span>
+              <div class="card-title-overlay">Poster Kartun</div>
+              <div class="card-desc-overlay">Poster Bertema Kartun</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bento-card b4 reveal delay-2">
+          <div class="img-wrap">
+            <img src="labu.jpeg" alt="Digital Imaging">
+            <div class="card-overlay">
+              <span class="card-tag">Digital Art</span>
+              <div class="card-title-overlay">Digital Imaging</div>
+              <div class="card-desc-overlay">Design Manipulation</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bento-card b5 reveal delay-3">
+          <div class="img-wrap">
+            <img src="mobil.jpg" alt="Desain Otomotif">
+            <div class="card-overlay">
+              <span class="card-tag">Automotive</span>
+              <div class="card-title-overlay">Desain Otomotif</div>
+              <div class="card-desc-overlay">Desain Bertema Kendaraan</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── VIDEO SECTION ─── -->
+    <section id="video" class="video-section">
+      <div class="video-header reveal">
+        <div class="section-label">— Motion Work</div>
+        <h2 class="section-title">Video Edits</h2>
+      </div>
+
+      <div class="video-grid">
+
+        <!-- VIDEO UNGGULAN (featured) -->
+        <div class="video-card featured reveal delay-1">
+          <div class="video-wrapper" id="featuredVideoWrap">
+            <!-- Menghapus atribut 'muted' agar suaranya kembali aktif khusus di sini -->
+            <video id="featuredVideo" src="kanda.mp4#t=0.001" loop playsinline preload="auto" poster="best.png"></video>
+            <div class="video-play-overlay" onclick="toggleVideo('featuredVideo', this)">
+              <div class="play-btn" id="playBtn-featuredVideo"></div>
+            </div>
+            <span class="video-badge">FEATURED</span>
+          </div>
+          <div class="video-info">
+            <h3>Detik-Detik Prabowo Mengakui Ferdinand</h3>
+            <p>Ngga bisa ngedit?Klik aja dibawah ini!</p>
+            <a href="#contact" class="btn-main" style="margin-top: auto; display: inline-block; width: fit-content;">Hubungi Saya →</a>
+          </div>
+        </div>
+
+        <!-- VIDEO CARD 1 -->
+        <div class="video-card reveal delay-2">
+          <div class="video-wrapper">
+            <!-- Tetap disenyapkan sesuai standar autoplay browser seluler -->
+            <video src="google.mp4" autoplay muted loop playsinline preload="auto" id="vid1" onclick="this.paused ? this.play() : this.pause()" style="cursor: pointer;"></video>
+          </div>
+          <div class="video-info">
+            <h3>Typografy</h3>
+            <p>Typografy Edit</p>
+          </div>
+        </div>
+
+        <!-- VIDEO CARD 2 -->
+        <div class="video-card reveal delay-3">
+          <div class="video-wrapper">
+            <!-- Tetap disenyapkan sesuai standar autoplay browser seluler -->
+            <video src="Spotify.mp4#t=0.001" autoplay muted loop playsinline preload="auto" id="vid2" onclick="this.paused ? this.play() : this.pause()" style="cursor: pointer;"></video>
+          </div>
+          <div class="video-info">
+            <h3>Moghraph And Graphic Design</h3>
+            <p>Moghraph Design</p>
+          </div>
+        </div>
+
+        <!-- VIDEO CARD 3 -->
+        <div class="video-card reveal delay-4">
+          <div class="video-wrapper">
+            <!-- Tetap disenyapkan sesuai standar autoplay browser seluler -->
+            <video src="google.mp4#t=0.001" autoplay muted loop playsinline preload="auto" id="vid3" onclick="this.paused ? this.play() : this.pause()" style="cursor: pointer;"></video>
+          </div>
+          <div class="video-info">
+            <h3>Motion Graphic Design</h3>
+            <p>Graphic Design Google Animation</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ─── CONTACT ─── -->
+    <section id="contact" class="contact-section">
+      <div class="contact-inner">
+        <div class="section-label reveal">— Get In Touch</div>
+        <h2 class="section-title reveal">
+          Let's <span class="highlight">Work</span><br>
+          <span class="outline">Together</span>
+        </h2>
+        <p class="reveal">Tertarik untuk berkolaborasi atau punya project yang ingin dikerjakan? Hubungi aku lewat platform di bawah ini!</p>
+        <div class="contact-links reveal">
+          <a href="https://wa.me/6285714182093" target="_blank" class="contact-btn wa">
+            <span class="contact-btn-icon">💬</span> WhatsApp
+          </a>
+          <a href="https://tiktok.com/@rifkispeed448_" target="_blank" class="contact-btn tiktok">
+            <span class="contact-btn-icon">🎵</span> TikTok
+          </a>
+          <a href="https://www.instagram.com/ferdinandrifkii?igsh=d3o5bzY4OHE2aHR1" target="_blank" class="contact-btn ig">
+            <span class="contact-btn-icon">📸</span> Instagram
+          </a>
+          <a href="https://github.com/ferdinandtezy-dot" target="_blank" class="contact-btn github">
+            <span class="contact-btn-icon">💻</span> GitHub
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── FOOTER ─── -->
+    <footer>
+      <span class="footer-logo">FERDINAND.</span>
+      <span>© 2026 Ferdinand. All Rights Reserved.</span>
+      <span style="color:var(--accent2)">Made with ❤️</span>
+    </footer>
+
+  </div><!-- end main-wrapper -->
+
+  <script>
+    // ─── CURSOR GLOW ───
+    const glow = document.getElementById('cursorGlow');
+    document.addEventListener('mousemove', e => {
+      glow.style.left = e.clientX + 'px';
+      glow.style.top = e.clientY + 'px';
+    });
+
+    // ─── SCROLL REVEAL ───
+    const reveals = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+          // Animate skill bars when about section visible
+          entry.target.querySelectorAll('.skill-bar-fill').forEach(bar => {
+            bar.style.width = bar.dataset.width + '%';
+          });
+        }
+      });
+    }, { threshold: 0.15 });
+
+    reveals.forEach(el => observer.observe(el));
+
+    // ─── SKILL BARS (standalone trigger) ───
+    const skillObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.querySelectorAll('.skill-bar-fill').forEach(bar => {
+            setTimeout(() => { bar.style.width = bar.dataset.width + '%'; }, 200);
+          });
+        }
+      });
+    }, { threshold: 0.3 });
+
+    document.querySelectorAll('.skills-grid').forEach(el => skillObserver.observe(el));
+
+    // ─── VIDEO TOGGLE (PLAY/PAUSE) ───
+    function toggleVideo(videoId, overlay) {
+      const video = document.getElementById(videoId);
+
+      if (video.paused) {
+        // Hanya pause video utama lainnya jika ada yang sedang play manual
+        document.querySelectorAll('video').forEach(v => {
+          if (v.id !== videoId && v.id === 'featuredVideo') {
+            v.pause();
+          }
+        });
+        
+        video.play();
+        overlay.style.opacity = '0';
+
+        // Tampilkan kembali tombol play jika video di-pause/selesai
+        video.onpause = () => {
+          overlay.style.opacity = '1';
+        };
+        video.onended = () => {
+          overlay.style.opacity = '1';
+        };
+      } else {
+        video.pause();
+      }
+    }
+
+    // ─── BENTO CARDS STAGGER ───
+    const bentoCards = document.querySelectorAll('.bento-card');
+    const bentoObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0) scale(1)';
+          }, i * 100);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    bentoCards.forEach(card => {
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(30px) scale(0.97)';
+      card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      bentoObserver.observe(card);
+    });
+  </script>
+
+</body>
+</html>
